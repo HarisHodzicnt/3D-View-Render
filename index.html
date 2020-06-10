@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Viewstl Javascript Plugin - User file</title>
+    </head>
+
+    <style>
+        body {text-align:center;}
+        .spans{
+            padding: 10px;
+            margin-left: 5px;
+        }
+        .title{
+            margin-top: 10vh;
+        }
+        .dummy>span{
+            padding: 10px;
+            margin-left: 10px;
+        }
+        .hover:hover{
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+    </script>
+
+    <body>
+        <div style="display: flex;flex-wrap: wrap;">
+            <div style="flex: 50%;">
+                <h2 class="title">Product name</h2>
+                <p class="dummy">
+                    <span>dental</span>
+                    <span>item</span>
+                    <span>25$</span>
+                </p>
+            </div>
+            <div style="flex: 50%; min-height: 300px; position: relative;">
+                
+                <div id="stl_cont" style="width:80%;min-width: 80%; min-height:300px;margin:0 auto; border:1px dashed black; margin-bottom: 10px;">
+                    <div style="position: absolute; top:50%;left: 50%; transform: translate(-50%, -50%);" id="dragDrop" >
+                        <label>Drag & Drop</label>
+                        <label for="input" style="color:blue" class="hover">or just browse your pc</label>
+                    </div>
+                   </div>
+                 
+                <input id="input" type="file" style="display: none;"  onchange='stl_viewer.add_model({local_file:this.files[0]});' accept="*.*">
+
+                <div id="sizes" style="margin-top:20px;"></div>
+            </div>
+        </div>
+
+      
+        
+        <script src="stl_viewer.min.js"></script>
+            
+        <script>
+           
+            var stl_viewer=new StlViewer ( document.getElementById("stl_cont"),
+            {
+                auto_resize:true,
+
+                auto_rotate:true,
+                camera_state:{"position":{"x":0.3,"y":0,"z":0}},
+                canvas_height:"100%",
+                set_drag_and_drop:true,
+                loading_progress_callback:load_prog,
+            model_loaded_callback:buraz,
+             } );
+
+            
+             function load_prog(){
+                document.getElementById("dragDrop").innerHTML="Loading ..."
+             }
+
+             function buraz(){
+                 let info=stl_viewer.get_model_info(1)
+                 stl_viewer.set_color(1, "#f0dc86")
+                 document.getElementById("dragDrop").style.display="none"
+                 for (let [key, value] of Object.entries(info.dims)) {
+                        let size=document.createElement("span");
+                        size.innerText=`${key} : ${value*24.5}`;
+                        size.className="spans"
+                        document.getElementById("sizes").appendChild(size)
+                        }
+                let volume=document.createElement("p")
+                volume.innerText=`Volume: ${(info.volume*24.5*1000).toFixed(2)}`;
+                document.getElementById("sizes").appendChild(volume)
+
+            }
+        </script>
+        
+        
+
+    </body>
+</html>
